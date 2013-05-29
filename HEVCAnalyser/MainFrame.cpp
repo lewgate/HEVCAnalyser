@@ -1,5 +1,6 @@
 #include "MainFrame.h"
 #include "ThumbnailThread.h"
+#include "YUVParaSetDlg.h"
 
 enum wxbuildinfoformat {
     short_f, long_f };
@@ -158,6 +159,9 @@ void MainFrame::OnOpenFile(wxCommandEvent& event)
     m_bOPened = true;
     if(m_bYUVFile)
     {
+		YUVParaSetDlg setparaDlg(this);
+        m_iSourceWidth = setparaDlg.GetWidth();
+        m_iSourceHeight = setparaDlg.GetHeight();
         // only used in test, the single thread cost a lot of time
 //        wxBeginBusyCursor();
 //        m_cYUVIO.open((char *)sfile.mb_str(wxConvUTF8).data(), false, 8, 8, 8, 8);
@@ -170,8 +174,7 @@ void MainFrame::OnOpenFile(wxCommandEvent& event)
         // single thread end
 
         // multi-thread
-        m_iSourceWidth = 832;
-        m_iSourceHeight = 480;
+
         wxImageList* pImage_list = new wxImageList((int)m_iSourceWidth*0.2, (int)m_iSourceHeight*0.2);
         m_pThumbnalList->SetImageList(pImage_list, wxIMAGE_LIST_NORMAL);
         ThumbnailThread* pThumbThread = new ThumbnailThread(this, pImage_list, m_iSourceWidth, m_iSourceHeight, 8, sfile);
